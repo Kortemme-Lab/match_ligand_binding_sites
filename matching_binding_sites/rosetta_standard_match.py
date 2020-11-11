@@ -205,7 +205,7 @@ def write_params_file_for_ligand(binding_site_pdb, output_file):
 
 def standard_rosetta_match(scratching_path, scaffold_pdb, constraint_file, ligand_name, params_file=None, keep_outputs=False):
     '''Run standard Rosetta matching.
-    Return the number of matches.
+    Return the number of matches and the matched positions in rosetta numbering.
     Return -1 if matching failed.
     '''
     abs_scaffold_pdb = os.path.abspath(scaffold_pdb)
@@ -258,13 +258,35 @@ def standard_rosetta_match(scratching_path, scaffold_pdb, constraint_file, ligan
 
     return_code = subprocess.call(matcher_cmd)
 
-    # Count the number of matches
+    # Count the number of matches and get the matched positions
 
     num_matches = 0
+    matched_positions = []
+    scaffold_pose = pyrosetta.pose_from_file(abs_scaffold_pdb)
+    scaffold_pose.pdb_info().set_chains('A')
 
     for f in os.listdir('.'):
         if f.startswith('UM') and f.endswith('.pdb'):
             num_matches += 1
+
+            # Extract the matched positions from the name of the output file
+
+            matched_positions.append([])
+            pos_string = f.split('_')[2]
+           
+            # Get the positions of the amino acid characters
+            c_positions = []
+            for i in range(len(pos_string)):
+                if not pos_string[i].isnumeric():
+                    c_positions.append(i)
+
+            for i in range(len(c_positions)):
+                if i < len(c_positions) - 1:
+                    pdb_id = int(pos_string[c_positions[i] + 1 : c_positions[i + 1]])
+                else:
+                    pdb_id = int(pos_string[c_positions[i] + 1 : len(pos_string)])
+
+                matched_positions[-1].append(scaffold_pose.pdb_info().pdb2pose('A', pdb_id))
 
     # Clear the scratch path
 
@@ -274,10 +296,10 @@ def standard_rosetta_match(scratching_path, scaffold_pdb, constraint_file, ligan
         shutil.rmtree(scratching_path)
 
     if 0 == return_code:
-        return num_matches
+        return num_matches, matched_positions
 
     else:
-        return -1
+        return -1, matched_positions
 
 if __name__ == '__main__':
     pyrosetta.init()
@@ -285,13 +307,13 @@ if __name__ == '__main__':
     binding_site_pdb = './test_inputs/test_site.pdb'
     site_pose = pyrosetta.pose_from_file(binding_site_pdb) 
 
-    generate_cst_file(site_pose, 'test.cst')
+    generate_cst_file(site_pose, './test_inputs/test.cst')
     ##write_params_file_for_ligand(binding_site_pdb, 'test.params')
 
     
-    num_matches = standard_rosetta_match('test_rosetta_match', './test_inputs/2src_scaffold.pdb', './test_inputs/test_short.cst', 'ANP', 
+    num_matches, matched_positions = standard_rosetta_match('test_rosetta_match', './test_inputs/2src_scaffold.pdb', './test_inputs/test_short.cst', 'ANP', 
             './test_inputs/debug_params/params_file_from_mol2/ANP.params',
             #keep_outputs=False)
             keep_outputs=True)
 
-    print('Found {0} matches.'.format(num_matches))
+    print('Found {0} matches. The matched positions are {1}'.format(num_matches, matched_positions))

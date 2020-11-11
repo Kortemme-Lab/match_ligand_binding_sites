@@ -166,9 +166,10 @@ if __name__ == '__main__':
 
             scaffold_protein_residues = [i for i in range(1, scaffold_pose.size() + 1) if scaffold_pose.residue(i).is_protein()]
 
-            num_fast_matches = fast_match.fast_match(site_pose, site_protein_residues, scaffold_pose, scaffold_protein_residues,
+            num_fast_matches, fast_matched_positions = fast_match.fast_match(site_pose, site_protein_residues, scaffold_pose, scaffold_protein_residues,
                     match_output_path, dump_matches=options.dump_matches)
             match_info['num_fast_matches'] = num_fast_matches
+            match_info['fast_matched_positions'] = fast_matched_positions
 
             fast_match_finish_time = time.time()
 
@@ -181,17 +182,18 @@ if __name__ == '__main__':
                 else:
                     rosetta_match_scratch_path = os.path.join(main_scratch_path, 'rosetta_match_scaffold_{0}'.format(f.split('.')[0]))
 
-                num_rosetta_matches = rosetta_standard_match.standard_rosetta_match(rosetta_match_scratch_path, os.path.join(scaffold_path, f), 
-                        binding_site_constraint_file, ligand_name, ligand_params_file, keep_outputs=options.dump_matches)
+                num_rosetta_matches, rosetta_matched_positions = rosetta_standard_match.standard_rosetta_match(rosetta_match_scratch_path, 
+                        os.path.join(scaffold_path, f), binding_site_constraint_file, ligand_name, ligand_params_file, keep_outputs=options.dump_matches)
                 
                 # Try a different ligand name if the match failed
 
                 if ligand_params_file is None and num_rosetta_matches < 0:
 
-                    num_rosetta_matches = rosetta_standard_match.standard_rosetta_match(rosetta_match_scratch_path, os.path.join(scaffold_path, f), 
-                            binding_site_constraint_file, 'pdb_' + ligand_name, ligand_params_file, keep_outputs=options.dump_matches)
+                    num_rosetta_matches, rosetta_matched_positions = rosetta_standard_match.standard_rosetta_match(rosetta_match_scratch_path, 
+                            os.path.join(scaffold_path, f), binding_site_constraint_file, 'pdb_' + ligand_name, ligand_params_file, keep_outputs=options.dump_matches)
 
                 match_info['num_rosetta_matches'] = num_rosetta_matches
+                match_info['rosetta_matched_positions'] = rosetta_matched_positions
 
             rosetta_standard_match_finish_time = time.time()
 
@@ -208,4 +210,4 @@ if __name__ == '__main__':
 
     os.makedirs(os.path.join(output_path, d1, d2, d3), exist_ok=True)
     with open(os.path.join(output_path, d1, d2, d3, 'all_match_info.json'), 'w') as f:
-        json.dump(all_match_info, f)
+        json.dump(all_match_info, f, indent=' '*4)
