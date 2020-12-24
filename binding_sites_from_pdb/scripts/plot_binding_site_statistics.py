@@ -211,6 +211,7 @@ def plot_num_aa_types(bs_infos, output_file=None, ligand_sizes=None):
 
     enrichment_ratios_list = [(k, enrichment_ratios[k]) for k in enrichment_ratios.keys()]
     enrichment_ratios_list_sorted = sorted(enrichment_ratios_list, key=lambda x:x[1])
+    print(enrichment_ratios_list_sorted)
     N_aa_types = len(enrichment_ratios_list_sorted)
 
     fig, ax1 = plt.subplots()
@@ -288,7 +289,7 @@ if __name__ == '__main__':
 
     print('The total number of binding sites is {0}.'.format(len(bs_infos)))
 
-#    print_binding_sites_with_given_properties(bs_infos, 1, 1, 40, 1000)
+    print_binding_sites_with_given_properties(bs_infos, 1, 1, 40, 1000)
 
     # Print most common ligands
 
@@ -296,59 +297,61 @@ if __name__ == '__main__':
 
     # Print frequencies of ligand sizes and binding site sizes
 
-#    print_frequencies_of_n_lig_heavy_atoms_and_binding_site_sizes(bs_infos)
+    print_frequencies_of_n_lig_heavy_atoms_and_binding_site_sizes(bs_infos)
 
     # Plot the ligand sizes vs binding site sizes
 
-#    ligand_sizes = get_n_ligand_heavy_atoms(bs_infos)
-#    binding_site_sizes = get_binding_site_sizes(bs_infos)
-#    plot_lig_sizes_vs_site_sizes(ligand_sizes, binding_site_sizes, output_file='./plots/lig_sizes_vs_site_sizes.svg')
-#    
-#    make_histogram(ligand_sizes, 'number of ligand heavy atoms', upper_bound=100, lower_bound=1, num_bins=100, output_file='./plots/num_ligand_heavy_atoms.png')
-#    make_histogram(binding_site_sizes, 'Number of residues in ligand binding site', upper_bound=50, lower_bound=1, num_bins=50, output_file='./plots/binding_site_sizes.png')
-#
+    ligand_sizes = get_n_ligand_heavy_atoms(bs_infos)
+    binding_site_sizes = get_binding_site_sizes(bs_infos)
+    print(min(ligand_sizes), max(ligand_sizes))
+    print(min(binding_site_sizes), max(binding_site_sizes))
+    print('There are {0} binding sites with at least 3 protein residues'.format(len([x for x in binding_site_sizes if x > 2])))
+   
+    plot_lig_sizes_vs_site_sizes(ligand_sizes, binding_site_sizes, output_file='./plots/lig_sizes_vs_site_sizes.svg')
+    
+    make_histogram(ligand_sizes, 'number of ligand heavy atoms', upper_bound=100, lower_bound=1, num_bins=100, output_file='./plots/num_ligand_heavy_atoms.png')
+    make_histogram(binding_site_sizes, 'Number of residues in ligand binding site', upper_bound=50, lower_bound=1, num_bins=50, output_file='./plots/binding_site_sizes.png')
 
+    # Plot the histogram energies
 
-#    # Plot the histogram energies
-#
-#    atr_energies = get_binding_site_energies(bs_infos, 'fa_atr')
-#    make_histogram(atr_energies, 'fa_atr (REU)', upper_bound=0, lower_bound=-15, output_file='./plots/hist_atr_energies.png')
-#    
-#    rep_energies = get_binding_site_energies(bs_infos, 'fa_rep')
-#    make_histogram(rep_energies, 'fa_rep (REU)', upper_bound=5, lower_bound=0, output_file='./plots/hist_rep_energies.png')
-#    
-#    sol_energies = get_binding_site_energies(bs_infos, 'fa_sol')
-#    make_histogram(sol_energies, 'fa_sol (REU)', upper_bound=20, lower_bound=-5, output_file='./plots/hist_sol_energies.png')
-#    
-#    elec_energies = get_binding_site_energies(bs_infos, 'fa_elec')
-#    make_histogram(elec_energies, 'fa_elec (REU)', upper_bound=5, lower_bound=-30, output_file='./plots/hist_elec_energies.png')
-#    
-#    lk_ball_energies = get_binding_site_energies(bs_infos, 'lk_ball_wtd')
-#    make_histogram(lk_ball_energies, 'lk_ball_wtd (REU)', upper_bound=2, lower_bound=-2, output_file='./plots/hist_lk_ball_energies.png')
-#    
-#    hbond_bb_sc_energies = get_binding_site_energies(bs_infos, 'hbond_bb_sc')
-#    make_histogram(hbond_bb_sc_energies, 'hbond_bb_sc (REU)', upper_bound=0, lower_bound=-4, output_file='./plots/hist_hbond_bb_sc_energies.png', y_max=2000)
-#    
-#    hbond_sc_energies = get_binding_site_energies(bs_infos, 'hbond_sc')
-#    make_histogram(hbond_sc_energies, 'hbond_sc (REU)', upper_bound=0, lower_bound=-4, output_file='./plots/hist_hbond_sc_energies.png', y_max=2000)
-#    
-#    total_energies = get_binding_site_energies(bs_infos, 'weighted_total')
-#    make_histogram(total_energies, 'weighted total 2 body ref2015 energy (REU)', upper_bound=20, lower_bound=-40, output_file='./plots/hist_total_energies.png')
-#    
-#    # Print the residues that give the highest and lowest energies
-#    
-#    print_highest_and_lowest_energy_residues(bs_infos, 'fa_atr')
-#    print_highest_and_lowest_energy_residues(bs_infos, 'fa_rep')
-#    print_highest_and_lowest_energy_residues(bs_infos, 'fa_sol')
-#    print_highest_and_lowest_energy_residues(bs_infos, 'fa_elec')
-#    print_highest_and_lowest_energy_residues(bs_infos, 'lk_ball_wtd')
-#    print_highest_and_lowest_energy_residues(bs_infos, 'hbond_bb_sc')
-#    print_highest_and_lowest_energy_residues(bs_infos, 'hbond_sc')
-#    print_highest_and_lowest_energy_residues(bs_infos, 'weighted_total')
+    atr_energies = get_binding_site_energies(bs_infos, 'fa_atr')
+    make_histogram(atr_energies, 'fa_atr (REU)', upper_bound=0, lower_bound=-15, output_file='./plots/hist_atr_energies.png')
+    
+    rep_energies = get_binding_site_energies(bs_infos, 'fa_rep')
+    make_histogram(rep_energies, 'fa_rep (REU)', upper_bound=5, lower_bound=0, output_file='./plots/hist_rep_energies.png')
+    
+    sol_energies = get_binding_site_energies(bs_infos, 'fa_sol')
+    make_histogram(sol_energies, 'fa_sol (REU)', upper_bound=20, lower_bound=-5, output_file='./plots/hist_sol_energies.png')
+    
+    elec_energies = get_binding_site_energies(bs_infos, 'fa_elec')
+    make_histogram(elec_energies, 'fa_elec (REU)', upper_bound=5, lower_bound=-30, output_file='./plots/hist_elec_energies.png')
+    
+    lk_ball_energies = get_binding_site_energies(bs_infos, 'lk_ball_wtd')
+    make_histogram(lk_ball_energies, 'lk_ball_wtd (REU)', upper_bound=2, lower_bound=-2, output_file='./plots/hist_lk_ball_energies.png')
+    
+    hbond_bb_sc_energies = get_binding_site_energies(bs_infos, 'hbond_bb_sc')
+    make_histogram(hbond_bb_sc_energies, 'hbond_bb_sc (REU)', upper_bound=0, lower_bound=-4, output_file='./plots/hist_hbond_bb_sc_energies.png', y_max=2000)
+    
+    hbond_sc_energies = get_binding_site_energies(bs_infos, 'hbond_sc')
+    make_histogram(hbond_sc_energies, 'hbond_sc (REU)', upper_bound=0, lower_bound=-4, output_file='./plots/hist_hbond_sc_energies.png', y_max=2000)
+    
+    total_energies = get_binding_site_energies(bs_infos, 'weighted_total')
+    make_histogram(total_energies, 'weighted total 2 body ref2015 energy (REU)', upper_bound=20, lower_bound=-40, output_file='./plots/hist_total_energies.png')
+    
+    # Print the residues that give the highest and lowest energies
+    
+    print_highest_and_lowest_energy_residues(bs_infos, 'fa_atr')
+    print_highest_and_lowest_energy_residues(bs_infos, 'fa_rep')
+    print_highest_and_lowest_energy_residues(bs_infos, 'fa_sol')
+    print_highest_and_lowest_energy_residues(bs_infos, 'fa_elec')
+    print_highest_and_lowest_energy_residues(bs_infos, 'lk_ball_wtd')
+    print_highest_and_lowest_energy_residues(bs_infos, 'hbond_bb_sc')
+    print_highest_and_lowest_energy_residues(bs_infos, 'hbond_sc')
+    print_highest_and_lowest_energy_residues(bs_infos, 'weighted_total')
 
     # Plot the AA composition of binding sites
 
-#    plot_num_aa_types(bs_infos, output_file='./plots/aa_composition.svg')
-    
-#    plot_num_aa_types(bs_infos, ligand_sizes=[1])
-#    plot_num_aa_types(bs_infos, ligand_sizes=list(range(2, 101)))
+    plot_num_aa_types(bs_infos, output_file='./plots/aa_composition.svg')
+   
+    plot_num_aa_types(bs_infos, ligand_sizes=[1], output_file='./plots/aa_composition_lig_size_1.svg')
+    plot_num_aa_types(bs_infos, ligand_sizes=list(range(2, 101)), output_file='./plots/aa_composition_lig_size_2_to_100.svg')
