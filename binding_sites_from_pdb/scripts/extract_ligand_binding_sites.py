@@ -177,8 +177,12 @@ def extract_subpose(pose, residues):
 
 def generate_params_file_for_ligand(ligand_pdb, ligand_name, ligand_id, output_path):
     '''Generate params file for a ligand.'''
-    openbabel = '/home/xingjie/Softwares/OpenBabel/openbabel-3.0.0/build/bin/obabel'
-    molfile_to_params_script = '/home/xingjie/Softwares/Rosetta/githubRepo/main/source/scripts/python/public/molfile_to_params.py'
+    with open('../site_settings.json', 'r') as f:
+        site_settings = json.load(f)
+   
+    openbabel = site_settings['openbabel']
+    molfile_to_params_script = site_settings['molfile_to_params_script']
+
     abs_ligand_pdb = os.path.abspath(ligand_pdb)
 
     # Go to the output path
