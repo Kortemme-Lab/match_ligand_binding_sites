@@ -100,8 +100,10 @@ if __name__ == '__main__':
     binding_site_summary_file = '../binding_sites_from_pdb/binding_site_database_summary.json'
     binding_site_base = '../binding_sites_from_pdb'
 
-    main_scratch_path = None
-    #main_scratch_path = os.environ['TMPDIR']
+    try:
+        main_scratch_path = os.environ['TMPDIR']
+    except:
+        main_scratch_path = None
 
     pyrosetta.init()
 
