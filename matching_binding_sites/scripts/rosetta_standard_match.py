@@ -215,7 +215,7 @@ def standard_rosetta_match(scratching_path, scaffold_pdb, constraint_file, ligan
     if not (params_file is None):
         abs_params_file = os.path.abspath(params_file)
    
-    with open('../../site_settings.json', 'r') as f:
+    with open('../site_settings.json', 'r') as f:
         site_settings = json.load(f)
 
         matcher_app = site_settings['matcher_app']
