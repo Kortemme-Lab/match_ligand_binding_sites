@@ -5,6 +5,7 @@ using standard Rosetta matcher.
 import os
 import subprocess
 import shutil
+import json
 
 import numpy as np
 
@@ -213,8 +214,11 @@ def standard_rosetta_match(scratching_path, scaffold_pdb, constraint_file, ligan
     
     if not (params_file is None):
         abs_params_file = os.path.abspath(params_file)
-    
-    matcher_app = 'match.linuxgccrelease'
+   
+    with open('../../site_settings.json', 'r') as f:
+        site_settings = json.load(f)
+
+        matcher_app = site_settings['matcher_app']
 
     # Go to the output path
 
