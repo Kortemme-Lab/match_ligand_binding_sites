@@ -1,0 +1,1 @@
+This directory contains scripts I used to submit matching jobs and doing analysis. The input and output files are hard-coded in the scripts. Therefore they cannot be readily used for general purposes. If you want to use this scripts, make sure you adjust the scrip accordingly.
